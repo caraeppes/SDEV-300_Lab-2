@@ -1,5 +1,7 @@
 import string
 import secrets
+import datetime
+import math
 
 
 class PasswordGenerator:
@@ -91,21 +93,101 @@ class PercentageCalculator:
         self.precision = None
 
     def calculate_percentage(self):
-        return
+        self.set_numerator()
+        self.set_denominator()
+        self.set_precision()
+        percentage = self.numerator / self.denominator
+        print(f"{self.numerator} / {self.denominator} = {percentage:.{self.precision}f}%")
 
     def set_numerator(self):
         numerator = input('Enter a positive integer numerator: ')
+        if validate_is_digit(numerator):
+            self.numerator = int(numerator)
+        else:
+            self.set_numerator()
 
+    def set_denominator(self):
+        denominator = input('Enter a positive integer denominator: ')
+        if validate_is_digit(denominator):
+            self.denominator = int(denominator)
+            if self.denominator == 0:
+                print("Denominator cannot be 0.  Please try again.")
+                self.set_denominator()
+        else:
+            self.set_denominator()
+
+    def set_precision(self):
+        precision = input('Enter a positive integer float precision: ')
+        if validate_is_digit(precision):
+            self.precision = int(precision)
+        else:
+            self.set_precision()
+
+
+class DaysUntilTargetDateCalculator:
+    def calculate_days_until_target_date(self):
+        today = datetime.date.today()
+        target_date = datetime.date(2025, 7, 4)
+        days_to_target_date = target_date - today
+        print("There are " + str(days_to_target_date.days) + " days until July 4, 2025.")
+
+class LawOfCosinesCalculator:
+
+    def __init__(self):
+        self.line_a = None
+        self.line_b = None
+        self.angle_c = None
+
+    def calculate_triangle_leg(self):
+        self.set_line_a()
+        self.set_line_b()
+        self.set_angle_c()
+
+        cos_angle_c = math.cos(math.radians(self.angle_c))
+        c_squared = self.line_a ** 2 + self.line_b ** 2 - (2 * self.line_a * self.line_b * cos_angle_c)
+        line_c = math.sqrt(c_squared)
+        print(f"The length of line c is {line_c:.2f}.")
+
+    def set_line_a(self):
+        line_a = input("Enter a positive integer for the length of line a: ")
+        if validate_is_digit(line_a):
+            self.line_a = int(line_a)
+        else:
+            self.set_line_a()
+
+    def set_line_b(self):
+        line_b = input("Enter a positive integer for the length of line b: ")
+        if validate_is_digit(line_b):
+            self.line_b = int(line_b)
+        else:
+            self.set_line_b()
+
+    def set_angle_c(self):
+        angle_c = input("Enter a positive integer for the angle of C: ")
+        if validate_is_digit(angle_c):
+            self.angle_c = int(angle_c)
+        else:
+            self.set_angle_c()
 
 def validate_is_digit(input):
     if input.isdigit():
         return True
     else:
-        print("Value must be a number.  Please try again.")
+        print("Value must be a positive number.  Please try again.")
         return False
 
 def main():
     """Main function"""
+
+    law_of_cosines_calculator = LawOfCosinesCalculator()
+    law_of_cosines_calculator.calculate_triangle_leg()
+
+    days_until_target_date_calculator = DaysUntilTargetDateCalculator()
+    days_until_target_date_calculator.calculate_days_until_target_date()
+
+    percentage_calculator = PercentageCalculator()
+    percentage_calculator.calculate_percentage()
+
     password_generator = PasswordGenerator()
     password_generator.generate_password()
 
