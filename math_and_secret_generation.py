@@ -5,11 +5,11 @@ SDEV 300
 Lab 2
 
 This is a program that provides the user with a menu of functional options.
-The user can choose to generate a secure password, calculate a percentage with a given degree of precision,
-get the number of days until July 4, 2025, calculate a triangle leg length using the Law of Cosines, 
-or calculate the volume of a right circle cylinder.
+The user can choose to generate a secure password, calculate a percentage
+with a given degree of precision, get the number of days until July 4, 2025,
+calculate a triangle leg length using the Law of Cosines, or calculate the
+volume of a right circle cylinder.
 """
-
 
 import string
 import secrets
@@ -19,47 +19,53 @@ import math
 
 class PasswordGenerator:
     """Class for generating a secure password with specific constraints"""
-    
+
     def __init__(self):
         """Initialize the password generator"""
         self.password_length = None
-        self.minimum_uppercase_letters = None
-        self.minimum_lowercase_letters = None
-        self.minimum_digits = None
-        self.minimum_special_characters = None
+        self.min_uppercase = None
+        self.min_lowercase = None
+        self.min_digits = None
+        self.min_special_chars = None
         self.allowed_characters = string.ascii_letters + string.digits + string.punctuation
 
     def generate_password(self):
-        """Gets input from user for password length, minimum uppercase letters, minimum lowercase letters,
-        minimum digits, and minimum special characters and generates a secure password using the given constraints"""
-        
+        """
+        Gets input from user for password length, minimum uppercase letters,
+        minimum lowercase letters,minimum digits, and minimum special characters
+        and generates a secure password using the given constraints
+        """
+
         # Gets and validates user input and sets values
         self.set_password_length()
-        self.set_minimum_uppercase_letters()
-        self.set_minimum_lowercase_letters()
-        self.set_minimum_digits()
-        self.set_minimum_special_characters()
+        self.set_min_uppercase()
+        self.set_min_lowercase()
+        self.set_min_digits()
+        self.set_min_special_chars()
 
-        # True if sum of provided minimum values is less than or equal to password length 
-        run_password_generator = (self.minimum_uppercase_letters + self.minimum_lowercase_letters + self.minimum_digits
-                                  + self.minimum_special_characters <= self.password_length)
+        # True if sum of provided minimum values is less than or equal to password length
+        run_password_generator = (self.min_uppercase + self.min_lowercase + self.min_digits
+                                  + self.min_special_chars <= self.password_length)
 
         # Generates passwords until all constraints are met
         while run_password_generator:
-            password = ''.join(secrets.choice(self.allowed_characters) for i in range(self.password_length))
-            if (sum(c.isupper() for c in password) >= self.minimum_uppercase_letters
-                and sum(c.islower() for c in password) >= self.minimum_lowercase_letters
-                and sum(c.isdigit() for c in password) >= self.minimum_digits
-                    and self.get_number_of_special_characters(password) >= self.minimum_special_characters):
+            password = ''.join(secrets.choice(self.allowed_characters)
+                               for i in range(self.password_length))
+
+            if (sum(c.isupper() for c in password) >= self.min_uppercase
+                    and sum(c.islower() for c in password) >= self.min_lowercase
+                    and sum(c.isdigit() for c in password) >= self.min_digits
+                    and self.get_special_chars_count(password) >= self.min_special_chars):
                 print("Password Generated: ", password)
                 break
 
         # Restarts password generator if sum of minimum constraints is greater than password length
         if not run_password_generator:
-            print('The sum of the minimum values provided is greater than the password length.  Please try again.\n')
+            print('The sum of the minimum values provided is greater than the password length.'
+                  'Please try again.\n')
             self.generate_password()
 
-    def get_number_of_special_characters(self, password):
+    def get_special_chars_count(self, password):
         """Returns the number of special characters in a string"""
         return len([c for c in password if c in string.punctuation])
 
@@ -71,49 +77,48 @@ class PasswordGenerator:
         else:
             self.set_password_length()
 
-    def set_minimum_uppercase_letters(self):
+    def set_min_uppercase(self):
         """Gets and validates input for minimum uppercase letters"""
-        minimum_uppercase_letters = input('Minimum Number of Uppercase Letters: ')
-        if self.validate_minimums(minimum_uppercase_letters):
-            self.minimum_uppercase_letters = int(minimum_uppercase_letters)
+        min_uppercase = input('Minimum Number of Uppercase Letters: ')
+        if self.validate_minimums(min_uppercase):
+            self.min_uppercase = int(min_uppercase)
         else:
-            self.set_minimum_uppercase_letters()
+            self.set_min_uppercase()
 
-    def set_minimum_lowercase_letters(self):
+    def set_min_lowercase(self):
         """Gets and validates input for minimum lowercase letters"""
-        minimum_lowercase_letters = input('Minimum Number of Lowercase Letters: ')
-        if self.validate_minimums(minimum_lowercase_letters):
-            self.minimum_lowercase_letters = int(minimum_lowercase_letters)
+        min_lowercase = input('Minimum Number of Lowercase Letters: ')
+        if self.validate_minimums(min_lowercase):
+            self.min_lowercase = int(min_lowercase)
         else:
-            self.set_minimum_lowercase_letters()
+            self.set_min_lowercase()
 
-    def set_minimum_digits(self):
+    def set_min_digits(self):
         """Gets and validates input for minimum digits"""
-        minimum_digits = input('Minimum Number of Digits: ')
-        if self.validate_minimums(minimum_digits):
-            self.minimum_digits = int(minimum_digits)
+        min_digits = input('Minimum Number of Digits: ')
+        if self.validate_minimums(min_digits):
+            self.min_digits = int(min_digits)
         else:
-            self.set_minimum_digits()
+            self.set_min_digits()
 
-    def set_minimum_special_characters(self):
+    def set_min_special_chars(self):
         """Gets and validates input for minimum special characters"""
-        minimum_special_characters = input('Minimum Number of Special Characters: ')
-        if self.validate_minimums(minimum_special_characters):
-            self.minimum_special_characters = int(minimum_special_characters)
+        min_special_chars = input('Minimum Number of Special Characters: ')
+        if self.validate_minimums(min_special_chars):
+            self.min_special_chars = int(min_special_chars)
         else:
-            self.set_minimum_special_characters()
+            self.set_min_special_chars()
 
     def validate_minimums(self, value):
-        """Validates that input for minimum is a positive integer and less than the password length"""
+        """Validates input is a positive integer and less than the password length"""
         return validate_is_digit(value) and self.validate_less_than_password_length(value)
 
     def validate_less_than_password_length(self, value):
         """Validates that input value is less than password length"""
         if int(value) <= self.password_length:
             return True
-        else:
-            print("Value cannot be greater than the password length.  Please try again.")
-            return False
+        print("Value cannot be greater than the password length.  Please try again.")
+        return False
 
 
 class PercentageCalculator:
@@ -126,7 +131,7 @@ class PercentageCalculator:
         self.precision = None
 
     def calculate_percentage(self):
-        """Gets user input for numerator, denominator and degree of precision and calculates the percentage"""
+        """Gets user input for numerator, denominator and precision and calculates the percentage"""
         self.set_numerator()
         self.set_denominator()
         self.set_precision()
@@ -158,16 +163,6 @@ class PercentageCalculator:
             self.set_precision()
 
 
-class DateCountdown:
-    """Class for calculating the number of days until July 4, 2025"""
-
-    def create_countdown(self):
-        """Calculates and prints the number of days from today until July 4, 2025"""
-        today = datetime.date.today()
-        target_date = datetime.date(2025, 7, 4)
-        days_to_target_date = target_date - today
-        print(f"There are {days_to_target_date.days} days until July 4, 2025.")
-
 class LawOfCosinesCalculator:
     """Class for calculating the length of side c of a triangle using the Law of Cosines"""
 
@@ -178,17 +173,20 @@ class LawOfCosinesCalculator:
         self.angle_c = None
 
     def calculate_triangle_leg(self):
-        """Gets user input for the lengths of a triangle's sides a and b and the angle of angle C in degrees.
-        Calculates the length of side c using the Law of Cosines"""
+        """
+        Gets user input for the lengths of a triangle's sides a and b and the angle of
+        angle C in degrees. Calculates the length of side c using the Law of Cosines.
+        """
         self.set_side_a()
         self.set_side_b()
         self.set_angle_c()
 
         # Calculating length of side c using Law of Cosines
         cos_angle_c = math.cos(math.radians(self.angle_c))
-        c_squared = self.side_a ** 2 + self.side_b ** 2 - (2 * self.side_a * self.side_b * cos_angle_c)
+        c_squared = (self.side_a ** 2 + self.side_b ** 2
+                     - (2 * self.side_a * self.side_b * cos_angle_c))
         side_c = math.sqrt(c_squared)
-        
+
         print(f"The length of side c is {side_c:.2f}.")
 
     def set_side_a(self):
@@ -252,7 +250,7 @@ class CylinderVolumeCalculator:
 
 def display_menu():
     """Prints the menu options to the console"""
-    menu = """ 
+    menu = """
     What would you like to do today?
         a. Generate a Secure Password 
         b. Calculate and format a percentage
@@ -263,7 +261,9 @@ def display_menu():
         """
     print(menu)
 
-def run(password_generator, percentage_calculator, date_countdown, law_of_cosines_calculator, cylinder_volume_calculator):
+
+def run(password_generator, percentage_calculator, law_of_cosines_calculator,
+        cylinder_volume_calculator):
     """Displays menu to user and runs the program until the user chooses to exit"""
     print("Welcome to the Python SDEV300 Lab 2 Application.")
 
@@ -275,7 +275,7 @@ def run(password_generator, percentage_calculator, date_countdown, law_of_cosine
         elif selection == "b":
             percentage_calculator.calculate_percentage()
         elif selection == "c":
-            date_countdown.create_countdown()
+            create_date_countdown()
         elif selection == "d":
             law_of_cosines_calculator.calculate_triangle_leg()
         elif selection == "e":
@@ -287,35 +287,41 @@ def run(password_generator, percentage_calculator, date_countdown, law_of_cosine
             print("Invalid menu selection.  Please enter a valid option (a - f).")
 
 
-
-
-def validate_is_digit(input):
+def validate_is_digit(value):
     """Validates that the input is a positive integer or zero"""
-    if input.isdigit():
+    if value.isdigit():
         return True
-    else:
-        print("Value must be a positive number.  Please try again.")
-        return False
+    print("Value must be a positive number.  Please try again.")
+    return False
 
-def validate_digit_greater_than_zero(input):
+
+def validate_digit_greater_than_zero(value):
     """Validates that the input is a positive integer greater than zero"""
-    if not validate_is_digit(input):
+    if not validate_is_digit(value):
         return False
-    if int(input) > 0:
+    if int(value) > 0:
         return True
-    else:
-        print("Value cannot be zero.  Please enter a positive integer.")
-        return False
+    print("Value cannot be zero.  Please enter a positive integer.")
+    return False
+
+
+def create_date_countdown():
+    """Calculates and prints the number of days from today until July 4, 2025"""
+    today = datetime.date.today()
+    target_date = datetime.date(2025, 7, 4)
+    days_to_target_date = target_date - today
+    print(f"There are {days_to_target_date.days} days until July 4, 2025.")
 
 
 def main():
     """Main function"""
     password_generator = PasswordGenerator()
     percentage_calculator = PercentageCalculator()
-    date_countdown = DateCountdown()
     law_of_cosines_calculator = LawOfCosinesCalculator()
     cylinder_volume_calculator = CylinderVolumeCalculator()
 
-    run(password_generator, percentage_calculator, date_countdown, law_of_cosines_calculator, cylinder_volume_calculator)
+    run(password_generator, percentage_calculator, law_of_cosines_calculator,
+        cylinder_volume_calculator)
+
 
 main()
