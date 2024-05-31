@@ -61,7 +61,7 @@ class PasswordGenerator:
 
         # Restarts password generator if sum of minimum constraints is greater than password length
         if not run_password_generator:
-            print('The sum of the minimum values provided is greater than the password length.'
+            print('The sum of the minimum values provided is greater than the password length.  '
                   'Please try again.\n')
             self.generate_password()
 
@@ -117,7 +117,7 @@ class PasswordGenerator:
         """Validates that input value is less than password length"""
         if int(value) <= self.password_length:
             return True
-        print("Value cannot be greater than the password length.  Please try again.")
+        print("Value cannot be greater than the password length.  Please try again.\n")
         return False
 
 
@@ -209,7 +209,11 @@ class LawOfCosinesCalculator:
         """Gets and validates user input for angle of angle C"""
         angle_c = input("Enter a positive integer for the angle of C: ")
         if validate_digit_greater_than_zero(angle_c):
-            self.angle_c = int(angle_c)
+            if int(angle_c) >= 180:
+                print("Angle must be less than 180 degrees.  Please try again.")
+                self.set_angle_c()
+            else:
+                self.angle_c = int(angle_c)
         else:
             self.set_angle_c()
 
@@ -291,7 +295,7 @@ def validate_is_digit(value):
     """Validates that the input is a positive integer or zero"""
     if value.isdigit():
         return True
-    print("Value must be a positive number.  Please try again.")
+    print("Value must be a positive number.  Please try again.\n")
     return False
 
 
@@ -301,7 +305,7 @@ def validate_digit_greater_than_zero(value):
         return False
     if int(value) > 0:
         return True
-    print("Value cannot be zero.  Please enter a positive integer.")
+    print("Value cannot be zero.  Please enter a positive integer.\n")
     return False
 
 
