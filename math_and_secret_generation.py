@@ -41,7 +41,7 @@ class PasswordGenerator:
         return len([c for c in password if c in string.punctuation])
 
     def set_password_length(self):
-        password_length = input("Password Length: ")
+        password_length = input("\nPassword Length: ")
         if validate_is_digit(password_length):
             self.password_length = int(password_length)
         else:
@@ -85,6 +85,7 @@ class PasswordGenerator:
             print("Value cannot be greater than the password length.  Please try again.")
             return False
 
+
 class PercentageCalculator:
 
     def __init__(self):
@@ -124,12 +125,13 @@ class PercentageCalculator:
             self.set_precision()
 
 
-class DaysUntilTargetDateCalculator:
-    def calculate_days_until_target_date(self):
+class DateCountdown:
+
+    def create_countdown(self):
         today = datetime.date.today()
         target_date = datetime.date(2025, 7, 4)
         days_to_target_date = target_date - today
-        print("There are " + str(days_to_target_date.days) + " days until July 4, 2025.")
+        print(f"There are {days_to_target_date.days} days until July 4, 2025.")
 
 class LawOfCosinesCalculator:
 
@@ -169,6 +171,73 @@ class LawOfCosinesCalculator:
         else:
             self.set_angle_c()
 
+
+class CylinderVolumeCalculator:
+
+    def __init__(self):
+        self.radius = None
+        self.height = None
+
+    def calculate_volume(self):
+        self.set_radius()
+        self.set_height()
+
+        volume = math.pi * self.radius ** 2 * self.height
+
+        print(f"The volume of the cylinder is {volume:.5f}.")
+
+    def set_radius(self):
+        radius = input("Enter a positive integer for the radius of the cylinder: ")
+        if validate_is_digit(radius):
+            self.radius = int(radius)
+        else:
+            self.set_radius()
+
+    def set_height(self):
+        height = input("Enter a positive integer for the height of the cylinder: ")
+        if validate_is_digit(height):
+            self.height = int(height)
+        else:
+            self.set_height()
+
+
+def display_menu():
+    menu = """ 
+    What would you like to do today?
+        a. Generate a Secure Password 
+        b. Calculate and format a percentage
+        c. How many days from today until July 4, 2025?
+        d. Use the Law of Cosines to calculate the leg of a triangle
+        e. Calculate the volume of a Right Circular Cylinder
+        f. Exit Program 
+        """
+    print(menu)
+
+def run(password_generator, percentage_calculator, date_countdown, law_of_cosines_calculator, cylinder_volume_calculator):
+    print("Welcome to the Python SDEV300 Lab 2 Application.")
+
+    while True:
+        display_menu()
+        selection = input("Enter selection: ")
+        if selection == "a":
+            password_generator.generate_password()
+        elif selection == "b":
+            percentage_calculator.calculate_percentage()
+        elif selection == "c":
+            date_countdown.create_countdown()
+        elif selection == "d":
+            law_of_cosines_calculator.calculate_triangle_leg()
+        elif selection == "e":
+            cylinder_volume_calculator.calculate_volume()
+        elif selection == "f":
+            print("Exiting program.  Thanks for using the Python SDEV300 Lab 2 Application.")
+            break
+        else:
+            print("Invalid menu selection.  Please enter a valid option (a - f).")
+
+
+
+
 def validate_is_digit(input):
     if input.isdigit():
         return True
@@ -176,20 +245,15 @@ def validate_is_digit(input):
         print("Value must be a positive number.  Please try again.")
         return False
 
+
 def main():
     """Main function"""
-
-    law_of_cosines_calculator = LawOfCosinesCalculator()
-    law_of_cosines_calculator.calculate_triangle_leg()
-
-    days_until_target_date_calculator = DaysUntilTargetDateCalculator()
-    days_until_target_date_calculator.calculate_days_until_target_date()
-
-    percentage_calculator = PercentageCalculator()
-    percentage_calculator.calculate_percentage()
-
     password_generator = PasswordGenerator()
-    password_generator.generate_password()
+    percentage_calculator = PercentageCalculator()
+    date_countdown = DateCountdown()
+    law_of_cosines_calculator = LawOfCosinesCalculator()
+    cylinder_volume_calculator = CylinderVolumeCalculator()
 
+    run(password_generator, percentage_calculator, date_countdown, law_of_cosines_calculator, cylinder_volume_calculator)
 
 main()
